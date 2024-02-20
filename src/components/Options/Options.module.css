@@ -1,0 +1,12 @@
+.btn {
+  display: flex;
+  border: 10px;
+  flex-direction: row;
+  border: solid 1px;
+  box-shadow: 0 3px #999;
+}
+.ul {
+  margin-top: 15px;
+  display: flex;
+  gap: 4px;
+}
