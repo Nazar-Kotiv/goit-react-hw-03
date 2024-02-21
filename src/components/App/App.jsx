@@ -1,62 +1,56 @@
 import { useState, useEffect } from "react";
-import Description from "../Description/Description";
-import Options from "../Options/Options";
-import Feedback from "../Feedback/Feedback";
-import Notification from "../Notification/Notification";
+import ContactList from "../ContactList/ContactList";
+import SearchBox from "../SearchBox/SearchBox";
+import ContactForm from "../ContactForm/ContactForm";
 
 import "./App.css";
 
 export default function App() {
-  const [feedbackTypes, setFeedbackTypes] = useState(() => {
-    const savedFeedback = window.localStorage.getItem("saved-feedback");
-    if (savedFeedback !== null) {
-      return JSON.parse(savedFeedback);
+  const [phonebooks, setPhonebook] = useState(() => {
+    const savedNumbers = window.localStorage.getItem("saved-phonebooks");
+    if (savedNumbers !== null) {
+      return JSON.parse(savedNumbers);
     }
-    return {
-      good: 0,
-      neutral: 0,
-      bad: 0,
-    };
+    return [
+      { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
+      { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
+      { id: "id-3", name: "Eden Clements", number: "645-17-79" },
+      { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
+    ];
   });
+  const [filterText, setFilterText] = useState("");
 
   useEffect(() => {
-    window.localStorage.setItem(
-      "saved-feedback",
-      JSON.stringify(feedbackTypes)
-    );
-  }, [feedbackTypes]);
+    window.localStorage.setItem("saved-phonebooks", JSON.stringify(phonebooks));
+  }, [phonebooks]);
 
-  const updateFeedback = (feedbackType) => {
-    if (feedbackType === "reset") {
-      setFeedbackTypes({ good: 0, neutral: 0, bad: 0 });
-    } else {
-      setFeedbackTypes((prevFeedbackTypes) => ({
-        ...prevFeedbackTypes,
-        [feedbackType]: prevFeedbackTypes[feedbackType] + 1,
-      }));
-    }
+  const handleFilterChange = (text) => {
+    setFilterText(text);
   };
-  const totalFeedback =
-    feedbackTypes.good + feedbackTypes.neutral + feedbackTypes.bad;
 
-  const calculateTotalFeedback = Math.round(
-    ((feedbackTypes.good + feedbackTypes.neutral) / totalFeedback) * 100
+  const handleAddContact = (newContact) => {
+    setPhonebook([...phonebooks, newContact]);
+  };
+  const filteredPhonebooks = phonebooks.filter((contact) =>
+    contact.name.toLowerCase().includes(filterText.toLowerCase())
   );
 
-  return (
-    <div className="app-container">
-      <Description />
-      <Options updateFeedback={updateFeedback} totalFeedback={totalFeedback} />
+  const handleDeleteContact = (contactId) => {
+    const updatedContacts = phonebooks.filter(
+      (phonebook) => phonebook.id !== contactId
+    );
+    setPhonebook(updatedContacts);
+  };
 
-      {totalFeedback === 0 ? (
-        <Notification />
-      ) : (
-        <Feedback
-          feedbackTypes={feedbackTypes}
-          calculateTotalFeedback={calculateTotalFeedback}
-          totalFeedback={totalFeedback}
-        />
-      )}
+  return (
+    <div>
+      <h1>Phonebook</h1>
+      <ContactForm onAddContact={handleAddContact} />
+      <SearchBox onFilterChange={handleFilterChange} />
+      <ContactList
+        phonebooks={filteredPhonebooks}
+        onDeleteContact={handleDeleteContact}
+      />
     </div>
   );
 }
