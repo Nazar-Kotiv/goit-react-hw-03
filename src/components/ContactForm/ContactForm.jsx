@@ -1,7 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { nanoid } from "nanoid";
-import styles from "./ContactForm.module.css"; // Import the CSS module
+import styles from "./ContactForm.module.css";
 
 export default function ContactForm({ onAddContact }) {
   const FeedbackSchema = Yup.object().shape({
