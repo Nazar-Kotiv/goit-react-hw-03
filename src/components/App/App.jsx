@@ -46,7 +46,7 @@ export default function App() {
     <div>
       <h1>Phonebook</h1>
       <ContactForm onAddContact={handleAddContact} />
-      <SearchBox onFilterChange={handleFilterChange} />
+      <SearchBox onFilterChange={handleFilterChange} filterText={filterText} />
       <ContactList
         phonebooks={filteredPhonebooks}
         onDeleteContact={handleDeleteContact}
